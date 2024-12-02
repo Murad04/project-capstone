@@ -27,17 +27,17 @@ app = cors(app, allow_origin='*')
 app.config['PROVIDE_AUTOMATIC_OPTIONS'] = True
 
 # Initialize Socket.IO for real-time communication
-socketio = SocketIO(app)
+sio = socketio.AsyncClient(app)
 
 # Handle Socket.IO connect event
 @log_function
-@socketio.on('connect')
+@sio.on('connect')
 def handle_connect():
     logging.info('Connected')
 
 # Handle Socket.IO disconnect event
 @log_function
-@socketio.on('disconnect')
+@sio.on('disconnect')
 def handle_disconnect():
     logging.info('Disconnected')
 
