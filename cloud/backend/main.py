@@ -283,6 +283,7 @@ async def add_user_page():
     return await render_template("add_user.html")
 
 # Run the Quart app
-if __name__ == "__main__":
+#if __name__ == "__main__":
+def run():
     app.run(host="0.0.0.0", port=5000)
     socketio.run(app)
