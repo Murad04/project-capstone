@@ -12,3 +12,4 @@ aioodbc == 0.5.0
 pydantic == 2.9.2
 pathlib == 1.0.1
 gunicorn == 23.0.0
+email_validator == 2.2.0
