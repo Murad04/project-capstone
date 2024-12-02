@@ -32,7 +32,7 @@ def load_model(device):
     # Load the YOLO model as a custom model using a local repository
     model = torch.hub.load(r'D:\\Personal\\codes\\project capstone\\cloud\\ml-yolov5\\content\\yolov5', 
                            'custom', 
-                           path=model_path, 
+                           path=model_path, device=device
                            source='local')
     
     # Move the model to the specified device
