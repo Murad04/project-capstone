@@ -8,7 +8,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import pickle
 import logging
 from pushbullet import API
-from base_logger import log_function
+from cloud.backend.base_logger import log_function
 from quart_cors import cors
 from ml_yolov5 import model_yolo_for_recog as M_Yolo_Recog
 from socketio import SocketIO
