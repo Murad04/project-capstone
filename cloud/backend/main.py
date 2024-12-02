@@ -2,7 +2,7 @@ from quart import Quart, request, jsonify, render_template, websocket
 import torch
 import cv2
 import numpy as np
-import backend_db_operations as b_DB
+import cloud.backend.backend_db_operations as b_DB
 from torchvision import transforms
 from sklearn.metrics.pairwise import cosine_similarity
 import pickle

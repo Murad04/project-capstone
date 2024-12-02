@@ -1,7 +1,7 @@
 import aioodbc
 import datetime, json
 from pydantic import BaseModel, EmailStr
-from base_logger import log_function
+from cloud.backend.base_logger import log_function
 
 # Data Transfer Object (DTO) for user updates
 class UserUpdateDTO(BaseModel):
