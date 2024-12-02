@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Life</title>
+    <link rel="stylesheet" href="/cloud/frontend/home/index.css">
+</head>
+<body>
+
+    <!-- Landing Page -->
+    <div class="landing">
+        <h1>Secure Door Bell</h1>
+        <button onclick="enterSite()">Enter Site</button>
+    </div>
+
+    <!-- Main Content (Hidden initially) -->
+    <div class="main-content" id="main-content" style="display: none;">
+        <header>
+            <h1>SECURE LIFE</h1>
+            <nav>
+                <button onclick="showSection('my-page')">My Page</button>
+                <button onclick="showSection('news')">News</button>
+                <button onclick="showSection('contact')">Contact</button>
+            </nav>
+        </header>
+
+        <!-- Section: My Page -->
+        <section id="my-page" class="section-content">
+            <h2>My Page</h2>
+            <p><strong>Address:</strong> [Your Address Here]</p>
+            <h3>Who Can Enter This Home</h3>
+            <ul id="allowed-faces">
+                <!-- Faces from the backend will be dynamically added here -->
+            </ul>
+            <button onclick="closeSection()">Close</button>
+        </section>
+
+        <!-- Section: News -->
+        <section id="news" class="section-content">
+            <h2>News</h2>
+            <p><strong>Entry Logs:</strong></p>
+            <ul>
+                <li>Ilaha - Entered at 12:30 PM</li>
+                <li>Unknown Visitor - Attempted Entry at 1:15 PM</li>
+                <li>Murad - Entered at 3:00 PM</li>
+            </ul>
+            <button onclick="closeSection()">Close</button>
+        </section>
+
+        <!-- Section: Contact -->
+        <section id="contact" class="section-content">
+            <h2>Contact</h2>
+            <p><strong>Residents' Contact Numbers:</strong></p>
+            <ul>
+                <li>Ilaha - +1234567890</li>
+                <li>Sabina - +0987654321</li>
+                <li>Ramiz - +1122334455</li>
+            </ul>
+            <p><strong>Emergency Contact:</strong> +911 or +123456789</p>
+            <button onclick="closeSection()">Close</button>
+        </section>
+
+        <footer>
+            <p>&copy; 2024 Secure Life. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        async function fetchAllowedFaces() {
+            try {
+                const response = await fetch("http://localhost:5000/get_names"); // Backend endpoint
+                const data = await response.json();
+
+                if (data.names) {
+                    const allowedFacesList = document.getElementById("allowed-faces");
+                    allowedFacesList.innerHTML = ""; // Clear existing entries
+
+                    // Iterate over the faces and add them to the list
+                    data.names.forEach(name => {
+                        const listItem = document.createElement("li");
+                        listItem.textContent = face.name; // Use the name property
+                        allowedFacesList.appendChild(listItem);
+                    });
+                } else {
+                    console.error("No faces data found");
+                }
+            } catch (error) {
+                console.error("Error fetching allowed faces:", error);
+            }
+        }
+
+        function enterSite() {
+            document.querySelector(".landing").style.display = "none";
+            document.getElementById("main-content").style.display = "block";
+
+            // Fetch allowed faces when entering the site
+            fetchAllowedFaces();
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll(".section-content").forEach(section => {
+                section.style.display = section.id === sectionId ? "block" : "none";
+            });
+        }
+
+        function closeSection() {
+            document.querySelectorAll(".section-content").forEach(section => {
+                section.style.display = "none";
+            });
+        }
+    </script>
+</body>
+</html>
