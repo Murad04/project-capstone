@@ -11,7 +11,7 @@ from pushbullet import API
 from cloud.backend.base_logger import log_function
 from quart_cors import cors
 from cloud.ml_yolov5 import model_yolo_for_recog as M_Yolo_Recog
-from socketio import SocketIO
+import socketio
 import asyncio,datetime
 
 # Initialize Pushbullet API for sending notifications
