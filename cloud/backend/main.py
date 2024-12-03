@@ -261,7 +261,7 @@ async def login_page():
 
 # WebSocket endpoint for real-time updates
 @log_function
-@app.websocket('ws')
+@app.websocket('/ws')
 async def websocket_endpoint():
     try:
         while True:
