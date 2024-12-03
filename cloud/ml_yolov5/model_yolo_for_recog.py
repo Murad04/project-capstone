@@ -4,8 +4,8 @@ import pathlib
 from torchvision import transforms
 
 # Fix PosixPath issue on Windows
-if pathlib.PosixPath != pathlib.WindowsPath:
-    pathlib.PosixPath = pathlib.WindowsPath
+#if pathlib.PosixPath != pathlib.WindowsPath:
+#    pathlib.PosixPath = pathlib.WindowsPath
 
 def get_device():
     """
