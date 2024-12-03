@@ -54,7 +54,7 @@ preprocess = transforms.Compose([
 logging.info("Loading the model...")
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 model = M_Yolo_Recog.load_model(device)
-device = M_Yolo_Recog.get_device(model)  # Get the device (CPU/GPU) the model is using
+device = M_Yolo_Recog.get_device()  # Get the device (CPU/GPU) the model is using
 
 # Load or initialize the known faces database
 try:
