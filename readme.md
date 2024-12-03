@@ -1,4 +1,4 @@
-Project for detecting and recogniting the face with raspberry pi with using torch and YOLOv5 model trained on custom dataset.
+Project for detect and recognition the face with raspberry pi with using torch and YOLOv5 model trained on custom dataset.
 
 Structure: 
         Cloud folder:
