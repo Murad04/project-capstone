@@ -19,7 +19,7 @@ requests == 2.32.3
 ultralytics == 8.3.31
 mss == 10.0.0
 pafy == 0.5.5
-tritonclient = 2.52.0
+tritonclient == 2.52.0
 platformdirs == 4.2.2
 # YOLOv5 requirements
 # Usage: pip install -r requirements.txt
