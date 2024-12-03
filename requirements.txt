@@ -14,3 +14,6 @@ pathlib == 1.0.1
 gunicorn == 23.0.0
 email_validator == 2.2.0
 python-socketio == 5.11.4
+pandas == 2.2.3
+requests == 2.32.3
+ultralytics == 8.3.31
