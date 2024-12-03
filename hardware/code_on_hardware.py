@@ -34,14 +34,14 @@ logging.info('Started the code_on_hardware')
 
 # GPIO PIN configuration
 START_PIN = 27                                                  # Start button pin
-#DOOR_PIN = 18                                                   # Door relay control pin
+#DOOR_PIN = 18                                                  # Door relay control pin
 BEEP_PIN = 18                                                   # Buzzer control pin
 SHUT_DOWN_PIN = 22                                              # Shutdown button pin
 RESET_PIN = 17                                                  # Reset button pin
 
 # Initialize GPIO pins
 GPIO.setmode(GPIO.BCM)                                          # Use Broadcom (BCM) numbering
-#GPIO.setup(DOOR_PIN, GPIO.OUT)                                  # Set door pin as output
+#GPIO.setup(DOOR_PIN, GPIO.OUT)                                 # Set door pin as output
 GPIO.setup(BEEP_PIN, GPIO.OUT)                                  # Set buzzer pin as output
 GPIO.setup(START_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)      # Start button with pull-down resistor
 GPIO.setup(SHUT_DOWN_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Shutdown button with pull-down resistor
