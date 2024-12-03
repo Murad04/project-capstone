@@ -11,7 +11,6 @@ from pushbullet import API
 from cloud.backend.base_logger import log_function
 from quart_cors import cors
 from cloud.ml_yolov5 import model_yolo_for_recog as M_Yolo_Recog
-import socketio
 import asyncio,datetime
 
 # Initialize Pushbullet API for sending notifications
@@ -25,22 +24,6 @@ logging.info("Started the project")
 app = Quart(__name__, template_folder='../frontend')
 app = cors(app, allow_origin='*')
 app.config['PROVIDE_AUTOMATIC_OPTIONS'] = True
-
-# Initialize Socket.IO for real-time communication
-sio = socketio.AsyncClient(app)
-
-# Handle Socket.IO connect event
-@log_function
-@sio.on('connect')
-def handle_connect():
-    logging.info('Connected')
-
-# Handle Socket.IO disconnect event
-@log_function
-@sio.on('disconnect')
-def handle_disconnect():
-    logging.info('Disconnected')
-
 logging.info('Started preprocessing features')
 
 # Preprocessing pipeline for face images
@@ -287,4 +270,3 @@ async def add_user_page():
 #if __name__ == "__main__":
 def run():
     app.run(host="0.0.0.0", port=5000)
-    socketio.run(app)
