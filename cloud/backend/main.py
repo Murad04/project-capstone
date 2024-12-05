@@ -12,6 +12,7 @@ from cloud.backend.base_logger import log_function
 from quart_cors import cors
 from cloud.ml_yolov5 import model_yolo_for_recog as M_Yolo_Recog
 import asyncio,datetime
+import traceback
 
 # Initialize Pushbullet API for sending notifications
 pb = API()
@@ -104,17 +105,14 @@ async def get_user_login_logs():
 @app.route("/recognize", methods=["POST"])
 async def recognize():
     try:
-        # Check if the "file" part exists in the request
+        # Simulate a step to identify where errors occur
         if "file" not in request.files:
-            logging.error('no file')
-            return jsonify({"error": "No file part"}), 400
+            raise ValueError("No file part in the request.")
         
-        # Get the file from the request
         file = request.files["file"]
-        
-        # Read the file data
-        file_data = await file.read()  # If you're using async file handling
-
+        file_data = file.read()
+        if not file_data:
+            raise ValueError("The file is empty.")
         # Convert the file to a numpy array
         np_img = np.frombuffer(file_data, np.uint8)
         
@@ -142,7 +140,13 @@ async def recognize():
         else:
             return jsonify({"message": "No faces detected", "result": "no_detections"})
     except Exception as ex:
-        return jsonify({"error": f"{ex}"}), 500
+        # Capture and return traceback for debugging
+        error_traceback = traceback.format_exc()
+        print(f"Error occurred: {error_traceback}")  # Log the traceback
+        return jsonify({
+            "error": str(ex),
+            "traceback": error_traceback
+        }), 500
 
 # Endpoint to add a new user to the database
 @app.route('/add_user',methods = ['POST'])
