@@ -609,3 +609,6 @@ TypeError: The response value returned by the view function cannot be None
 2024-11-18 00:36:53,565 - INFO - Completed get_custom_data_from_custom_table
 2024-11-18 00:36:53,565 - ERROR - Error at get_names: dictionary update sequence element #0 has length 8; 2 is required
 2024-11-18 00:36:53,565 - INFO - Completed get_names
+2024-12-06 00:18:15,240 - INFO - Started the project
+2024-12-06 00:18:15,241 - INFO - Started preprocessing features
+2024-12-06 00:18:15,242 - INFO - Loading the model...
