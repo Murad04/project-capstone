@@ -131,7 +131,7 @@ async def recognize():
         
         # Process detections
         if detections is not None and len(detections) > 0:
-            return jsonify({"detections": detections, "result": "success"})
+            return detections
         else:
             return jsonify({"message": "No faces detected", "result": "no_detections"})
     except Exception as ex:
