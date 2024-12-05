@@ -105,12 +105,13 @@ async def get_user_login_logs():
 @app.route("/recognize", methods=["POST"])
 async def recognize():
     try:
+        files = await request.files
         # Simulate a step to identify where errors occur
-        if "file" not in request.files:
+        if "file" not in files:
             raise ValueError("No file part in the request.")
         
-        file = request.files["file"]
-        file_data = file.read()
+        file = files["file"]
+        file_data = await file.read()
         if not file_data:
             raise ValueError("The file is empty.")
         # Convert the file to a numpy array
@@ -118,6 +119,8 @@ async def recognize():
         
         # Decode the image
         img = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
+        if img is None:
+            return jsonify({"error": "Uploaded file is not a valid image"})
         
         # Save a temporary file
         temp_image_path = "temp_image.jpg"
