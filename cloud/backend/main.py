@@ -111,7 +111,7 @@ async def recognize():
             raise ValueError("No file part in the request.")
         
         file = files["file"]
-        file_data = await file.read()
+        file_data = file.read()
         if not file_data:
             raise ValueError("The file is empty.")
         # Convert the file to a numpy array
