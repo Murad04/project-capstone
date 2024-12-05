@@ -1,6 +1,7 @@
 import cv2
 import torch
 from torchvision import transforms
+import numpy as np
 
 # Define global variables for model and device
 global_model = None
