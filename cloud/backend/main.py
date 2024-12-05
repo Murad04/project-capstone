@@ -131,15 +131,7 @@ async def recognize():
         
         # Process detections
         if detections is not None and len(detections) > 0:
-            detection_data = []
-            for detection in detections:
-                x1, y1, x2, y2, confidence, cls = detection
-                detection_data.append({
-                    "box": [int(x1), int(y1), int(x2), int(y2)],
-                    "confidence": float(confidence),
-                    "class": int(cls)
-                })
-            return jsonify({"detections": detection_data, "result": "success"})
+            return jsonify({"detections": detections, "result": "success"})
         else:
             return jsonify({"message": "No faces detected", "result": "no_detections"})
     except Exception as ex:
