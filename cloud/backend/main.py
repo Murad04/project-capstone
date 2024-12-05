@@ -101,17 +101,32 @@ async def get_user_login_logs():
 
 # Endpoint to recognize faces from an uploaded image
 @app.route("/recognize", methods=["POST"])
-@log_function
 async def recognize():
     try:
+        # Check if the "file" part exists in the request
         if "file" not in request.files:
             return jsonify({"error": "No file part"}), 400
-        file =              await request.files["file"].read()
-        np_img =            np.frombuffer(file, np.uint8)
-        img =               cv2.imdecode(np_img, cv2.IMREAD_COLOR)
-        temp_image_path =   "temp_image.jpg"
+        
+        # Get the file from the request
+        file = request.files["file"]
+        
+        # Read the file data
+        file_data = await file.read()  # If you're using async file handling
+
+        # Convert the file to a numpy array
+        np_img = np.frombuffer(file_data, np.uint8)
+        
+        # Decode the image
+        img = cv2.imdecode(np_img, cv2.IMREAD_COLOR)
+        
+        # Save a temporary file
+        temp_image_path = "temp_image.jpg"
         cv2.imwrite(temp_image_path, img)
+        
+        # Perform detection
         detections = M_Yolo_Recog.call_ML(temp_image_path)
+        
+        # Process detections
         if detections is not None and len(detections) > 0:
             detection_data = []
             for detection in detections:
