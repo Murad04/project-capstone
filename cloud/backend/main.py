@@ -100,11 +100,13 @@ async def get_user_login_logs():
         return jsonify({"error": "Failed to fetch the data"}), 500
 
 # Endpoint to recognize faces from an uploaded image
+@log_function
 @app.route("/recognize", methods=["POST"])
 async def recognize():
     try:
         # Check if the "file" part exists in the request
         if "file" not in request.files:
+            logging.error('no file')
             return jsonify({"error": "No file part"}), 400
         
         # Get the file from the request
