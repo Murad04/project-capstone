@@ -1,11 +1,10 @@
 import cv2
 import torch
-import pathlib
 from torchvision import transforms
 
-# Fix PosixPath issue on Windows
-#if pathlib.PosixPath != pathlib.WindowsPath:
-#    pathlib.PosixPath = pathlib.WindowsPath
+# Define global variables for model and device
+global_model = None
+global_device = None
 
 def get_device():
     """
@@ -16,64 +15,63 @@ def get_device():
     """
     return torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-def load_model(device):
+def load_model_once():
     """
-    Loads the YOLO model from a local path and moves it to the specified device.
-
-    Args:
-        device (torch.device): The device to load the model on ('cuda' or 'cpu').
+    Loads the YOLO model once and stores it globally for reuse.
 
     Returns:
-        model: The loaded YOLO model.
+        None
     """
-    # Path to the YOLO model weights file
-    model_path = r"cloud/ml_yolov5/best.pt"
-    
-    # Load the YOLO model as a custom model using a local repository
-    model = torch.hub.load(r'cloud/ml_yolov5/content/yolov5', 
-                           'custom', 
-                           path=model_path, device=device,
-                           source='local')
-    
-    # Move the model to the specified device
-    model.to(device)  
-    return model
+    global global_model, global_device
+    if global_model is None:
+        global_device = get_device()
+        model_path = r"cloud/ml_yolov5/best.pt"
+        global_model = torch.hub.load(
+            r'cloud/ml_yolov5/content/yolov5', 
+            'custom', 
+            path=model_path, 
+            device=global_device, 
+            source='local'
+        )
+        print(f"YOLO model loaded on {global_device}")
 
-def detect_faces(model, image_path, device):
+def detect_faces(image_path):
     """
     Performs face detection on an input image using the YOLO model.
 
     Args:
-        model: The YOLO model to use for detection.
         image_path (str): Path to the input image.
-        device (torch.device): The device on which to run the detection.
 
     Returns:
         results: The detection results containing bounding boxes and class scores.
     """
+    global global_model, global_device
+    if global_model is None:
+        raise RuntimeError("Model is not loaded. Call load_model_once() first.")
+
     # Ensure the model is on the correct device
-    model.to(device)  
-    
+    global_model.to(global_device)
+
     # Read the input image using OpenCV
     image = cv2.imread(image_path)
-    
+
     # Perform inference on the image
-    results = model(image) 
-    
-    print(type(results))  # Print the type of results for debugging
+    results = global_model(image)
+
     return results
 
-def get_model_device(model):
+def call_ML(image_path):
     """
-    Retrieves the device the model is currently using.
+    Main function to perform face detection using the preloaded model.
 
     Args:
-        model: The YOLO model.
+        image_path (str): Path to the input image.
 
     Returns:
-        torch.device: The device the model is loaded on.
+        results: The detection results from the YOLO model.
     """
-    return next(model.parameters()).device
+    # Perform face detection
+    return detect_faces(image_path)
 
 def extract_face_embeddings(face, embedding_model, device):
     """
@@ -102,25 +100,3 @@ def extract_face_embeddings(face, embedding_model, device):
         embedding = embedding_model(face_tensor)  # Get the face embedding
     
     return embedding.cpu().numpy()  # Convert the embedding tensor to a NumPy array and return
-
-def call_ML(image_path):
-    """
-    Main function to load the model, perform face detection, and return the detection results.
-
-    Args:
-        image_path (str): Path to the input image.
-
-    Returns:
-        results: The detection results from the YOLO model.
-    """
-    # Determine the computation device
-    device = get_device()
-    print(f"Using device: {device}")  # Log the device being used
-    
-    # Load the YOLO model
-    model = load_model(device)
-    
-    # Perform face detection
-    detections = detect_faces(model, image_path, device)
-    
-    return detections

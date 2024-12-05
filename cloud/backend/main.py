@@ -37,7 +37,8 @@ preprocess = transforms.Compose([
 # Load the YOLO model for face detection
 logging.info("Loading the model...")
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-model = M_Yolo_Recog.load_model(device)
+#model = M_Yolo_Recog.load_model(device)
+M_Yolo_Recog.load_model_once()
 device = M_Yolo_Recog.get_device()  # Get the device (CPU/GPU) the model is using
 
 # Load or initialize the known faces database
