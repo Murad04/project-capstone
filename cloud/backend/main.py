@@ -109,12 +109,12 @@ async def recognize():
         files = await request.files
         # Simulate a step to identify where errors occur
         if "file" not in files:
-            raise ValueError("No file part in the request.")
+            return ValueError("No file part in the request.")
         
         file = files["file"]
         file_data = file.read()
         if not file_data:
-            raise ValueError("The file is empty.")
+            return ValueError("The file is empty.")
         # Convert the file to a numpy array
         np_img = np.frombuffer(file_data, np.uint8)
         
