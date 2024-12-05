@@ -24,16 +24,19 @@ def load_model_once():
     """
     global global_model, global_device
     if global_model is None:
-        global_device = get_device()
-        model_path = r"cloud/ml_yolov5/best.pt"
-        global_model = torch.hub.load(
-            r'cloud/ml_yolov5/content/yolov5', 
-            'custom', 
-            path=model_path, 
-            device=global_device, 
-            source='local'
-        )
-        print(f"YOLO model loaded on {global_device}")
+        try:
+            global_device = get_device()
+            model_path = r"cloud/ml_yolov5/best.pt"
+            global_model = torch.hub.load(
+                r'cloud/ml_yolov5/content/yolov5',
+                'custom',
+                path=model_path,
+                device=global_device,
+                source='local'
+            )
+            print(f"YOLO model loaded on {global_device}")
+        except Exception as e:
+            raise RuntimeError(f"Failed to load YOLO model: {e}")
 
 def detect_faces(image_path):
     """
@@ -54,9 +57,14 @@ def detect_faces(image_path):
 
     # Read the input image using OpenCV
     image = cv2.imread(image_path)
+    if image is None:
+        raise ValueError(f"Failed to read image at path: {image_path}")
 
     # Perform inference on the image
-    results = global_model(image)
+    try:
+        results = global_model(image)
+    except Exception as e:
+        raise RuntimeError(f"Error during model inference: {e}")
 
     return results
 
@@ -70,7 +78,8 @@ def call_ML(image_path):
     Returns:
         results: The detection results from the YOLO model.
     """
-    # Perform face detection
+    if not image_path:
+        raise ValueError("Image path is required.")
     return detect_faces(image_path)
 
 def extract_face_embeddings(face, embedding_model, device):
@@ -85,6 +94,11 @@ def extract_face_embeddings(face, embedding_model, device):
     Returns:
         np.ndarray: The extracted face embedding as a NumPy array.
     """
+    if face is None or not isinstance(face, np.ndarray):
+        raise ValueError("Invalid face input: Expected a numpy array.")
+    if embedding_model is None:
+        raise ValueError("Embedding model is not provided.")
+    
     # Define the preprocessing pipeline
     preprocess = transforms.Compose([
         transforms.ToTensor(),                  # Convert the image to a tensor
@@ -93,10 +107,13 @@ def extract_face_embeddings(face, embedding_model, device):
     ])
     
     # Apply preprocessing to the face image and add a batch dimension
-    face_tensor = preprocess(face).unsqueeze(0).to(device)  
+    face_tensor = preprocess(face).unsqueeze(0).to(device)
     
     # Perform inference without tracking gradients
     with torch.no_grad():
-        embedding = embedding_model(face_tensor)  # Get the face embedding
+        try:
+            embedding = embedding_model(face_tensor)  # Get the face embedding
+        except Exception as e:
+            raise RuntimeError(f"Error during embedding extraction: {e}")
     
     return embedding.cpu().numpy()  # Convert the embedding tensor to a NumPy array and return
