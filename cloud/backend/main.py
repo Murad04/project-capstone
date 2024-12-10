@@ -7,18 +7,15 @@ from torchvision import transforms
 from sklearn.metrics.pairwise import cosine_similarity
 import pickle
 import logging
-from pushbullet import API
+from pushbullet import Pushbullet
 from cloud.backend.base_logger import log_function
 from quart_cors import cors
 from cloud.ml_yolov5 import model_yolo_for_recog as M_Yolo_Recog
 import asyncio,datetime
-import traceback
+import traceback, time
 
 # Initialize Pushbullet API for sending notifications
-pb = API()
-access_token = ''  
-pb.set_token(access_token)
-
+pb = Pushbullet('o.bsH5YVU6T6OSJc8K0K8uSKmUorMK7oRx')
 logging.info("Started the project")
 
 # Initialize Quart app and enable Cross-Origin Resource Sharing (CORS)
@@ -47,6 +44,31 @@ try:
         known_faces = pickle.load(f)
 except FileNotFoundError:
     known_faces = {}                    # Initialize an empty database if the file doesn't exist
+
+@log_function
+# Function to wait for a "yes" response from Pushbullet
+def wait_for_response():
+    start_time = time.time()
+    timeout = 120  # 2 minutes in seconds
+
+    print("Waiting for 'yes' response...")
+    while True:
+        elapsed_time = time.time() - start_time
+        if elapsed_time > timeout:
+            print("Timeout reached. No response received.")
+            return False
+
+        # Fetch the latest pushes
+        pushes = pb.get_pushes(limit=10)  # Limit to last 10 pushes to reduce load
+        for push in pushes:
+            # Check if the push contains the text "yes"
+            if push.get("body", "").strip().lower() == "yes":
+                print("Received 'yes' response!")
+                return True
+
+        # Add a short delay to avoid spamming the API
+        time.sleep(5)
+
 
 # Save the known faces database to a file
 @log_function
@@ -229,7 +251,8 @@ async def send_notification():
 
     # Send notification via Pushbullet
     try:
-        await pb.async_push_note(title, message)
+        pb.push_note(title, message)
+        response = wait_for_response()
         # Log notification in the database
         await b_DB.store_notifications(user_id, log_id, notification_type, sent_at)
         return jsonify({"message": "Notification sent successfully"}), 200
