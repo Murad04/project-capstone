@@ -1,3 +1,1 @@
-from cloud.backend import app
-
-app=main.run()
+from cloud.backend.main import app
