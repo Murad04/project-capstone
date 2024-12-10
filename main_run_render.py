@@ -1,3 +1,3 @@
-from cloud.backend import main
+from cloud.backend import app
 
 app=main.run()
